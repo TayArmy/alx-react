@@ -1,29 +1,21 @@
-import { getFullYear, getFooterCopy, getLatestNotification } from "./utils";
+/*
+Check that the function getFullYear returns the correct year (be careful to not create a time
+bomb)
+Check that getFooterCopy returns the correct string when the argument is true or false
+Check the returned string for getLatestNotification
+*/
+// import { render } from '@testing-library/react';
+import { getFullYear, getLatestNotification, getFooterCopy } from './utils';
 
-describe("Get full year", function() {
-  it("should return the correct year", function() {
-    const currentYear = new Date().getFullYear();
-    expect(getFullYear()).toBe(currentYear);
-  });
+test('getFullYear returns 2023', () => {
+    expect(getFullYear()).toEqual(2023)
 })
-
-describe("Get footer message", function() {
-  const trueMessage = 'Holberton School';
-  const falseMessage = 'Holberton School main dashboard';
-
-  it("should return the true footer message", function() {
-    const currentMessage = getFooterCopy(true);
-    expect(currentMessage).toBe(trueMessage);
-  });
-  it("should return the false footer message", function() {
-    const currentMessage = getFooterCopy(false);
-    expect(currentMessage).toBe(falseMessage);
-  })
+test('getFooterCopy returns "Holberton School main dashboard" when isIndex is false', () => {
+    expect(getFooterCopy()).toEqual("Holberton School main dashboard")
 })
-
-describe("Get latest notification", function() {
-  it("should return the urgent message text", function() {
-    const message = '<strong>Urgent requirement</strong> - complete by EOD';
-    expect(message).toBe(getLatestNotification());
-  });
+test('getFooterCopy returns "Holberton School" when isIndex is true', () => {
+    expect(getFooterCopy(true)).toEqual("Holberton School")
+})
+test('getLatestNotification returns a string', () => {
+    expect(getLatestNotification()).toEqual("<strong>Urgent requirement</strong> - complete by EOD")
 })
