@@ -1,29 +1,22 @@
-:root {
-  --color-brand: #e01d3f;
+.App {
+  display: flex;
+  /* border: 1px solid red; */
+  flex-direction: column;
+  height: 100vh;
+  margin: 0 2rem;
 }
-
 .App-header {
   display: flex;
   align-items: center;
-  color: var(--color-brand);
-  font-size: 20px;
-  border-bottom: 3px solid var(--color-brand);
+  color: rgb(225, 67, 67);
 }
-
-.App-header img {
-  width: 200px;
-}
-
 .App-body {
-  margin: 50px;
+  border-bottom: 3px solid rgb(225, 67, 67);;
+  border-top: 3px solid rgb(225, 67, 67);;
+  height: 80%;
+  padding-left: 3rem;
+  padding-top: 2rem;
 }
-
 .App-footer {
-  border-top: 3px solid var(--color-brand);
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  bottom: 0;
-  font-style: italic;
+  text-align: center;
 }
