@@ -28,4 +28,8 @@ describe("Notification component tests", () => {
   it("renders correct text", () => {
     expect(notification.find("p").text()).toBe("Here is the list of notifications");
   });
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 4227a85c87e16b80a901bdda94ee8e2ad38fee6a
