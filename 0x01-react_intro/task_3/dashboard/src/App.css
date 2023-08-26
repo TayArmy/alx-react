@@ -3,7 +3,8 @@
 }
 
 .App {
-  text-align: center;
+  position: relative;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -18,13 +19,20 @@
   border-bottom: 4px solid var(--brand-color);
 }
 
-.App-body {
-  text-align: left;
+.App-body input {
+  padding: 0.5rem;
+  margin: 0.5rem;
+}
+
+.App-body button {
+  padding: 0.3rem;
+  margin: 0.5rem;
 }
 
 .App-footer {
   border-top: 4px solid var(--brand-color);
-  position: fixed;
+  position: absolute;
   bottom: 0;
   width: 100%;
+  text-align: center;
 }

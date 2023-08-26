@@ -3,7 +3,7 @@
 }
 
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -18,13 +18,10 @@
   border-bottom: 4px solid var(--brand-color);
 }
 
-.App-body {
-  text-align: left;
-}
-
 .App-footer {
   border-top: 4px solid var(--brand-color);
   position: fixed;
   bottom: 0;
   width: 100%;
+  text-align: center;
 }
