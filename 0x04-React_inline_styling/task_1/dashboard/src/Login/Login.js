@@ -1,34 +1,48 @@
-import React from 'react'
-// import './Login.css'
+import React from "react";
+import { StyleSheet, css } from "aphrodite";
 
-import { StyleSheet, css } from 'aphrodite'
-
-import WithLogging from '../HOC/WithLogging'
-
-const Login = ({login}) => {
+const Login = () => {
   return (
     <>
+      <div className={css(styles.AppBody)}>
         <p>Login to access the full dashboard</p>
-        <form>
-          <label htmlFor="email" className={css(styles.labelS)}>email:</label>
-          <input id="email" type="text" className={css(styles.labelS)}/>
-          <label htmlFor="password" className={css(styles.labelS)}>password:</label>
-          <input id="password" type="password" className={css(styles.labelS)}/>
-          <button type='button' onClick={login}>OK</button>
-        </form>
-      </>
-  )
-}
+        <section className="form-inputs">
+          <section className="input">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              className={css(styles.input)}
+            />
+          </section>
+          <section className="input">
+            <label htmlFor="password">Password: </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              className={css(styles.input)}
+            />
+          </section>
+          <button>OK</button>
+        </section>
+      </div>
+    </>
+  );
+};
 
-export default WithLogging(Login)
-
-// define Aphrodite styles
 const styles = StyleSheet.create({
-  labelS: {
-    textTransform: 'capitalize',
-    paddingRight: '1rem'
+  AppBody: {
+    fontSize: "1rem",
+    padding: "2rem",
+    height: "45%",
+    marginBottom: "2em",
   },
-  inputS: {
-    marginRight: '1rem'
-  }
-})
+
+  input: {
+    margin: "10px",
+  },
+});
+
+export default Login;
