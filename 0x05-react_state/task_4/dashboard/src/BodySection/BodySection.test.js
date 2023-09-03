@@ -9,6 +9,7 @@ describe("BodySection tests", () => {
         <p>test children node</p>
       </BodySection>
     );
+
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.exists("h2")).toBe(true);
     expect(wrapper.find("h2").html()).toEqual("<h2>test title</h2>");

@@ -3,14 +3,14 @@ import CourseListRow from "./CourseListRow";
 import { shallow } from "enzyme";
 import { StyleSheetTestUtils } from "aphrodite";
 
-describe("Course List Row component test", () => {
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-  afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
+describe("Course List Row component test", () => {
   it("should render without crashing", () => {
     const wrapper = shallow(<CourseListRow textFirstCell="test" />);
 

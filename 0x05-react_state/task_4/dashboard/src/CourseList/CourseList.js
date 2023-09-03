@@ -1,8 +1,8 @@
 import React from "react";
+import { StyleSheet, css } from "aphrodite";
 import CourseListRow from "./CourseListRow";
 import PropTypes from "prop-types";
 import CourseShape from "./CourseShape";
-import { StyleSheet, css } from "aphrodite";
 
 function CourseList({ listCourses }) {
   return (
@@ -43,20 +43,20 @@ const styles = StyleSheet.create({
     marginRight: "auto",
   },
 
-  // th: {
-  //   borderBottom: '1px solid #ddd'
-  // },
+  th: {
+    borderBottom: "1px solid #ddd",
+    width: "80%",
+  },
 
-  // th,
-  // td: {
-  //   width: '80%',
-  // },
+  td: {
+    width: "80%",
+  },
 
-  // tr: {
-  //   ':nth-child(2)': {
-  //     textAlign: left,
-  //   }
-  // }
+  tr: {
+    "nth-child(2)": {
+      textAlign: "left",
+    },
+  },
 });
 
 CourseList.propTypes = {

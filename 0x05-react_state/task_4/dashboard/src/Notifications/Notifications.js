@@ -24,7 +24,12 @@ class Notifications extends Component {
     return (
       <React.Fragment>
         {!this.props.displayDrawer ? (
-          <div className={css(styles.menuItem)}>
+          <div
+            className={css(styles.menuItem)}
+            onClick={() => {
+              this.props.handleDisplayDrawer();
+            }}
+          >
             <p>Your notifications</p>
           </div>
         ) : (
@@ -45,6 +50,7 @@ class Notifications extends Component {
               aria-label="Close"
               onClick={(e) => {
                 console.log("Close button has been clicked");
+                this.props.handleHideDrawer();
               }}
             >
               <img src={closeIcon} alt="close icon" width="10px" />
@@ -86,8 +92,8 @@ const opacityAnim = {
 
 const bounceAnim = {
   "0%": { transform: "translateY(0px)" },
-  "50%": { transform: "translateY(-5px)" },
-  "75%": { transform: "translateY(5px)" },
+  "33%": { transform: "translateY(-5px)" },
+  "66%": { transform: "translateY(5px)" },
   "100%": { transform: "translateY(0px)" },
 };
 
@@ -98,21 +104,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "1.8em",
     right: "0",
-
-    "@media (max-width: 426px)": {
-      display: "block",
-      height: "100vh",
-      width: "100vw",
+    zIndex: "100",
+    "@media (max-width: 900px)": {
+      width: "100%",
+      padding: "0px",
+      fontSize: 20,
+      position: "relative",
+      right: 0,
+      left: 0,
       border: "none",
-      fontSize: "20px",
-      padding: "0",
-      backgroundColor: "white",
-    },
-  },
-
-  ul: {
-    "@media (max-width: 426px)": {
-      margin: "0",
     },
   },
 
@@ -125,7 +125,6 @@ const styles = StyleSheet.create({
     position: "relative",
     zIndex: 100,
     textAlign: "right",
-    // backgroundColor: "#fff8f8",
     ":hover": {
       cursor: "pointer",
       animationName: [opacityAnim, bounceAnim],
@@ -134,27 +133,31 @@ const styles = StyleSheet.create({
     },
   },
 
-  '[data-notification-type="default"]': {
-    color: "blue",
+  ul: {
+    "@media (max-width: 900px)": {
+      padding: 0,
+    },
   },
-
-  "[data-urgent]": {
-    color: "red",
-  },
-
-  '[data-notification-type="urgent"]': {
-    color: "red",
+  button: {
+    "@media (max-width: 900px)": {
+      position: "relative",
+      float: "right",
+    },
   },
 });
 
 Notifications.propTypes = {
   displayDrawer: PropTypes.bool,
   listNotifications: PropTypes.arrayOf(NotificationItemShape),
+  handleDisplayDrawer: PropTypes.func,
+  handleHideDrawer: PropTypes.func,
 };
 
 Notifications.defaultProps = {
   displayDrawer: false,
   listNotifications: [],
+  handleDisplayDrawer: () => {},
+  handleHideDrawer: () => {},
 };
 
 export default Notifications;
