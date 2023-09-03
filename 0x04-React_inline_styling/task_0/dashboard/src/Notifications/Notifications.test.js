@@ -3,7 +3,6 @@ import { shallow } from "enzyme";
 import { getLatestNotification } from "../utils/utils";
 import Notifications from "./Notifications";
 import NotificationItem from "./NotificationItem";
-import { StyleSheetTestUtils } from "aphrodite";
 
 const listNotifications = [
   { id: 1, type: "default", value: "New course available" },
@@ -12,14 +11,6 @@ const listNotifications = [
 ];
 
 describe("Notification tests", () => {
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-
-  afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
-
   it("renders Notification component without crashing", () => {
     const wrapper = shallow(<Notifications />);
 

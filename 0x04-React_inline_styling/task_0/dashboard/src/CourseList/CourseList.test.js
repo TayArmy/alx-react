@@ -2,7 +2,6 @@ import React from "react";
 import CourseList from "./CourseList";
 import CourseListRow from "./CourseListRow";
 import { shallow } from "enzyme";
-import { StyleSheetTestUtils } from "aphrodite";
 
 const listCourses = [
   { id: 1, name: "ES6", credit: 60 },
@@ -11,14 +10,6 @@ const listCourses = [
 ];
 
 describe("CourseList component tests", () => {
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-
-  afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
-
   it("should render without crashing", () => {
     const wrapper = shallow(<CourseList />);
 
@@ -43,13 +34,13 @@ describe("CourseList component tests", () => {
 
     expect(wrapper.find("tbody").children()).toHaveLength(3);
     expect(wrapper.find("tbody").childAt(0).html()).toEqual(
-      "<tr><td>ES6</td><td>60</td></tr>"
+      '<tr style="background-color:#f5f5f5ab"><td>ES6</td><td>60</td></tr>'
     );
     expect(wrapper.find("tbody").childAt(1).html()).toEqual(
-      "<tr><td>Webpack</td><td>20</td></tr>"
+      '<tr style="background-color:#f5f5f5ab"><td>Webpack</td><td>20</td></tr>'
     );
     expect(wrapper.find("tbody").childAt(2).html()).toEqual(
-      "<tr><td>React</td><td>40</td></tr>"
+      '<tr style="background-color:#f5f5f5ab"><td>React</td><td>40</td></tr>'
     );
   });
 
@@ -58,13 +49,13 @@ describe("CourseList component tests", () => {
 
     expect(wrapper.find("tbody").children()).toHaveLength(3);
     expect(wrapper.find("tbody").childAt(0).html()).toEqual(
-      "<tr><td>ES6</td><td>60</td></tr>"
+      '<tr style="background-color:#f5f5f5ab"><td>ES6</td><td>60</td></tr>'
     );
     expect(wrapper.find("tbody").childAt(1).html()).toEqual(
-      "<tr><td>Webpack</td><td>20</td></tr>"
+      '<tr style="background-color:#f5f5f5ab"><td>Webpack</td><td>20</td></tr>'
     );
     expect(wrapper.find("tbody").childAt(2).html()).toEqual(
-      "<tr><td>React</td><td>40</td></tr>"
+      '<tr style="background-color:#f5f5f5ab"><td>React</td><td>40</td></tr>'
     );
   });
 });

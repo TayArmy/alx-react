@@ -1,17 +1,8 @@
 import React from "react";
 import Login from "./Login";
 import { shallow } from "enzyme";
-import { StyleSheetTestUtils } from "aphrodite";
 
 describe("Login tests", () => {
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-
-  afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
-
   it("renders without crashing", () => {
     const wrapper = shallow(<Login />);
     expect(wrapper.exists()).toBe(true);
