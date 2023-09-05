@@ -7,6 +7,8 @@ import {
   LOGIN_FAILURE,
 } from "./uiActionTypes";
 
+import "node-fetch";
+
 export const login = (email, password) => {
   return {
     type: LOGIN,
@@ -14,9 +16,7 @@ export const login = (email, password) => {
   };
 };
 
-// bound login (ie create a function that dispatches the action)
-export const boundingLogin = (email, password) =>
-  dispatch(login(email, password));
+export const boundLogin = (email, password) => dispatch(login(email, password));
 
 export const logout = () => {
   return {
@@ -24,17 +24,25 @@ export const logout = () => {
   };
 };
 
+export const boundLogout = () => dispatch(logout());
+
 export const displayNotificationDrawer = () => {
   return {
     type: DISPLAY_NOTIFICATION_DRAWER,
   };
 };
 
+export const boundDisplayNotificationDrawer = () =>
+  dispatch(displayNotificationDrawer());
+
 export const hideNotificationDrawer = () => {
   return {
     type: HIDE_NOTIFICATION_DRAWER,
   };
 };
+
+export const boundHideNotificationDrawer = () =>
+  dispatch(hideNotificationDrawer());
 
 export const loginSuccess = () => {
   return {
@@ -48,17 +56,12 @@ export const loginFailure = () => {
   };
 };
 
-// async action creator...
 export const loginRequest = (email, password) => {
-  return async (dispatch) => {
-    boundingLogin(email, password);
-    try {
-      const res = await fetch("http://localhost:3000/login-success.json");
-      const res_1 = await res.json();
-      console.log(res_1);
-      return dispatch(loginSuccess());
-    } catch (error) {
-      return dispatch(loginFailure());
-    }
+  return (dispatch) => {
+    dispatch(login(email, password));
+    return fetch("http://localhost:8564/login-success.json")
+      .then((res) => res.json())
+      .then((json) => dispatch(loginSuccess()))
+      .catch((error) => dispatch(loginFailure()));
   };
 };

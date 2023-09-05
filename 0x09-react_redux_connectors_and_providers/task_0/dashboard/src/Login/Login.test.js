@@ -1,50 +1,57 @@
+import { shallow } from "enzyme";
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  waitFor,
-} from "@testing-library/react";
 import Login from "./Login";
-
 import { StyleSheetTestUtils } from "aphrodite";
 
-test("Login renders without crushing", () => {
-  StyleSheetTestUtils.suppressStyleInjection();
-  render(<Login />);
-  expect(
-    screen.getByText("Login to access the full dashboard")
-  ).toBeInTheDocument();
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
+describe("<Login />", () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
-test("Login renders 2 input and 2 label tags", () => {
-  StyleSheetTestUtils.suppressStyleInjection();
-  render(<Login />);
-  expect(screen.getAllByRole("textbox").length).toBe(1);
-  expect(screen.getAllByRole("textbox", { type: "password" }).length).toBe(1);
-  expect(screen.getAllByLabelText(/.+/).length).toBe(2); // match all tet labels
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
+  it("Login renders without crashing", () => {
+    const wrapper = shallow(<Login />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components render 3 input", () => {
+    const wrapper = shallow(<Login />);
+    wrapper.update();
+    expect(wrapper.find("div input")).toHaveLength(3);
+  });
+  it("Verify that the components render 2 label", () => {
+    const wrapper = shallow(<Login />);
+    wrapper.update();
+    expect(wrapper.find("div label")).toHaveLength(2);
+  });
 
-test("submit button is disabled by default and filling in inputs enables it", async () => {
-  StyleSheetTestUtils.suppressStyleInjection();
-  render(<Login />);
-  // have to fill the form first to enable submit button
-  const btn = screen.getByRole("button", { name: "OK" });
-  expect(btn).toBeInTheDocument();
-  expect(btn).toBeDisabled();
-  const emailInput = screen.getByRole("textbox", { name: "email:" });
-  expect(emailInput).toBeInTheDocument();
-  const passwordInput = screen.getByRole("textbox", { type: "password" });
-  expect(passwordInput).toBeInTheDocument();
+  it("Verify that the components render 2 label", () => {
+    const wrapper = shallow(<Login />);
+    const submitInput = wrapper.find("form input[type='submit']");
 
-  fireEvent.change(emailInput, { target: { value: "test@email" } });
-  fireEvent.change(passwordInput, { target: { value: "testpassword" } });
+    expect(submitInput).toHaveLength(1);
+    expect(submitInput.prop("disabled")).toEqual(true);
+  });
 
-  // expect(emailInput.value).toBe('test@email') - this fails (value is set to password's value, why?)
-  expect(passwordInput.value).toBe("testpassword");
-  // expect(btn).toBeEnabled() - this fails too (figure out how to simulate typing and trigger re-render with the values...)
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  it("Verify that the components render 2 label", () => {
+    const wrapper = shallow(<Login />);
+    const emailInput = wrapper.find("#email");
+    const passwordInput = wrapper.find("#password");
+
+    emailInput.simulate("change", {
+      target: { name: "email", value: "Larry@email.com" },
+    });
+
+    let submitInput = wrapper.find("form input[type='submit']");
+
+    expect(submitInput.prop("disabled")).toEqual(true);
+
+    passwordInput.simulate("change", {
+      target: { name: "password", value: "123456789" },
+    });
+
+    submitInput = wrapper.find("form input[type='submit']");
+    expect(submitInput.prop("disabled")).toEqual(false);
+  });
 });

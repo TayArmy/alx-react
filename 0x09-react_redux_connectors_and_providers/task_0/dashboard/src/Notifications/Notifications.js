@@ -1,88 +1,78 @@
 import React, { PureComponent } from "react";
-// import './Notifications.css'
-
+import NotificationItem from "./NotificationItem";
+import PropTypes from "prop-types";
+import NotificationItemShape from "./NotificationItemShape";
+import closeIcon from "../assets/close-icon.png";
 import { StyleSheet, css } from "aphrodite";
 
-import NotificationItem from "./NotificationItem";
-
-// const Notifications = ({displayDrawer=true, listNotifications=[]}) => {
 class Notifications extends PureComponent {
-  log = () => console.log("Close button has been clicked");
-
-  componentDidUpdate() {
-    console.log("Notifications rerendering ...");
+  constructor(props) {
+    super(props);
   }
-  // // the method is called by default every time the parent component re-renders (provide the re-render only on change optimization)
-  // shouldComponentUpdate(nextProps) {
-  //   // re-render only if notificationsList grows... (nextProps is the props the component is about to render with)
-  //   return nextProps.listNotifications.length > this.props.listNotifications.length || nextProps.displayDrawer !== this.props.displayDrawer
-  // }
-
-  state = {
-    isHover: false,
-  };
-  handleHover = () => {
-    const { isHover } = this.state;
-    this.setState({
-      isHover: !isHover,
-    });
-    // console.log('isHover: ', isHover)
-  };
 
   render() {
-    const displayDrawer = this.props.displayDrawer;
-    const listNotifications = this.props.listNotifications;
-    const handleDisplayDrawer = this.props.handleDisplayDrawer;
-    const handleHideDrawer = this.props.handleHideDrawer;
-    const markAsRead = this.props.markAsRead;
-    // const { isHover } = this.state
-    // console.log(displayDrawer)
-    // console.log(listNotifications)
+    const {
+      displayDrawer,
+      listNotifications,
+      handleDisplayDrawer,
+      handleHideDrawer,
+      markNotificationAsRead,
+    } = this.props;
+
+    const menuPStyle = css(
+      displayDrawer ? styles.menuItemPNoShow : styles.menuItemPShow
+    );
+
     return (
       <>
-        <div>
-          <p
-            className={css(styles.menuItemP)}
-            onMouseEnter={this.handleHover}
-            onClick={handleDisplayDrawer}
-          >
-            Your notifications
-          </p>
+        <div
+          className={css(styles.menuItem)}
+          id="menuItem"
+          onClick={handleDisplayDrawer}
+        >
+          <p className={menuPStyle}>Your notifications</p>
         </div>
         {displayDrawer && (
-          <div
-            className={css(styles.Notifications, styles.NotificationsHover)}
-            style={{ position: "relative" }}
-          >
-            {listNotifications.length > 0 ? (
-              <>
-                <p>Here is the list of notifications</p>
-                <ul className={css(styles.ulS)}>
-                  {listNotifications.map((item) => (
-                    <NotificationItem
-                      key={item.id}
-                      type={item.type}
-                      value={item.value}
-                      html={item.html}
-                      read={() => markAsRead(item.id)}
-                      styles={styles}
-                    />
-                  ))}
-                </ul>
-                <button
-                  aria-label="Close"
-                  onClick={() => {
-                    this.log();
-                    handleHideDrawer();
-                  }}
-                  className={css(styles.style)}
-                >
-                  x
-                </button>
-              </>
-            ) : (
-              <p> No new notifications for now</p>
-            )}
+          <div className={css(styles.notifications)} id="Notifications">
+            <button
+              style={{
+                background: "transparent",
+                border: "none",
+                position: "absolute",
+                right: 20,
+              }}
+              aria-label="close"
+              onClick={handleHideDrawer}
+              id="closeNotifications"
+            >
+              <img
+                src={closeIcon}
+                alt="close-icon"
+                className={css(styles.notificationsButtonImage)}
+              />
+            </button>
+            <p className={css(styles.notificationsP)}>
+              Here is the list of notifications
+            </p>
+            <ul className={css(styles.notificationsUL)}>
+              {listNotifications.length === 0 && (
+                <NotificationItem
+                  type="noNotifications"
+                  value="No new notifications for now"
+                />
+              )}
+
+              {listNotifications.map((notification) => (
+                <NotificationItem
+                  key={notification.id}
+                  id={notification.id}
+                  type={notification.type}
+                  value={notification.value}
+                  html={notification.html}
+                  markAsRead={markNotificationAsRead}
+                />
+              ))}
+            </ul>
           </div>
         )}
       </>
@@ -91,97 +81,133 @@ class Notifications extends PureComponent {
 }
 
 Notifications.defaultProps = {
+  displayDrawer: false,
   listNotifications: [],
+  handleDisplayDrawer: () => {},
+  handleHideDrawer: () => {},
+  markNotificationAsRead: () => {},
 };
 
-export default Notifications;
+Notifications.propTypes = {
+  displayDrawer: PropTypes.bool,
+  listNotifications: PropTypes.arrayOf(NotificationItemShape),
+  handleDisplayDrawer: PropTypes.func,
+  handleHideDrawer: PropTypes.func,
+  markNotificationAsRead: PropTypes.func,
+};
 
-// define aphrodite styles
-const opacityAnime = {
+const cssVars = {
+  mainColor: "#e01d3f",
+};
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
+};
+
+const opacityKeyframes = {
   from: {
     opacity: 0.5,
   },
+
   to: {
     opacity: 1,
   },
 };
 
-const bounce = {
-  "0%, 50%,100%": {
-    transform: "translateY(0px)",
+const translateYKeyframes = {
+  "0%": {
+    transform: "translateY(0)",
   },
-  "25%": {
+
+  "50%": {
+    transform: "translateY(-5px)",
+  },
+
+  "75%": {
     transform: "translateY(5px)",
   },
-  "75%": {
-    transform: "translateY(-5px)",
+
+  "100%": {
+    transform: "translateY(0)",
+  },
+};
+
+const borderKeyframes = {
+  "0%": {
+    border: `3px dashed deepSkyBlue`,
+  },
+
+  "100%": {
+    border: `3px dashed ${cssVars.mainColor}`,
   },
 };
 
 const styles = StyleSheet.create({
-  menuItemP: {
-    textAlign: "right",
-    cursor: "pointer",
-    animationName: bounce,
-    animationDuration: ".5s",
-    animationIterationCount: 3,
-  },
-  style: {
-    position: "absolute",
-    right: ".25rem",
-    top: ".25rem",
-    background: "transparent",
-    border: "none",
-    "@media (max-width: 650px)": {
-      right: ".5rem",
-      border: "1px solid gray",
-      borderRadius: "2px",
-    },
+  menuItem: {
+    float: "right",
+    backgroundColor: "#fff8f8",
     ":hover": {
-      border: "1px solid #e0354b",
-      color: "#e0354b",
-    },
-  },
-  Notifications: {
-    "@media (max-width: 650px)": {
-      width: "100%",
-      left: 0,
-      border: "none",
-      // border: '1px solid green',
-      padding: 0,
-      margin: 0,
-    },
-    border: "2px solid #e0354b",
-    padding: "1rem",
-    borderStyle: "dashed",
-    width: "40%",
-    right: 0,
-    marginLeft: "57%",
-    transition: "animation",
-  },
-  NotificationsHover: {
-    animationName: opacityAnime,
-    animationDuration: "1s",
-    animationIterationCount: 1,
-  },
-  ulS: {
-    "@media (max-width: 650px)": {
-      paddingInline: 0,
-    },
-    fontSize: "20px",
-  },
-  ulLi: {
-    "@media (max-width: 650px)": {
-      listStyle: "none",
-      padding: "10px 8px",
-      borderBottom: "1px solid black",
       cursor: "pointer",
+      animationName: [opacityKeyframes, translateYKeyframes],
+      animationDuration: "1s, 0.5s",
+      animationIterationCount: 3,
     },
   },
-  ulLiDefault: {
-    color: "blue",
+
+  menuItemPNoShow: {
+    marginRight: "8px",
+    display: "none",
   },
-  ulLiUrgent: {
-    color: "red",
+
+  menuItemPShow: {
+    marginRight: "8px",
+  },
+
+  notifications: {
+    float: "right",
+    // border: `3px dashed ${cssVars.mainColor}`,
+    padding: "10px",
+    marginBottom: "20px",
+    animationName: [borderKeyframes],
+    animationDuration: "0.8s",
+    animationIterationCount: 1,
+    animationFillMode: "forwards",
+    ":hover": {
+      border: `3px dashed deepSkyBlue`,
+      // animationFillMode: "forwards",
+    },
+    [screenSize.small]: {
+      float: "none",
+      border: "none",
+      listStyle: "none",
+      padding: 0,
+      fontSize: "20px",
+      ":hover": {
+        border: "none",
+        // animationFillMode: "forwards",
+      },
+      position: "absolute",
+      background: "white",
+      height: "110vh",
+      width: "100vw",
+      zIndex: 10,
+    },
+  },
+
+  notificationsButtonImage: {
+    width: "10px",
+  },
+
+  notificationsP: {
+    margin: 0,
+    marginTop: "15px",
+  },
+
+  notificationsUL: {
+    [screenSize.small]: {
+      padding: 0,
+    },
   },
 });
+
+export default Notifications;

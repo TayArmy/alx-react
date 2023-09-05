@@ -1,26 +1,22 @@
-import React, { useContext } from "react";
-import { getFooterCopy, getFullYear } from "../utils";
-import { css } from "aphrodite";
-import { AppContext } from "../App/AppContext";
-// import './Footer.css'
+import React from "react";
+import { getFullYear, getFooterCopy } from "../utils/utils";
+import AppContext from "../App/AppContext";
 
-const Footer = ({ styles = null }) => {
-  const { user } = useContext(AppContext);
-
+function Footer() {
   return (
-    <div className={styles && css(styles.appFooter)}>
-      {user.isLoggedIn && (
-        <p>
-          <a href={"mailto:" + user.email}>Contact us</a>
-        </p>
-      )}
-      <p>
-        <em>
-          Copyright {getFullYear()} - {getFooterCopy(true)}{" "}
-        </em>
-      </p>
-    </div>
+    <AppContext.Consumer>
+      {(context) => {
+        return (
+          <div className="footer">
+            <p>
+              Copyright {getFullYear()} - {getFooterCopy(true)}
+            </p>
+            {context.user.isLoggedIn && <a href="#">Contact us</a>}
+          </div>
+        );
+      }}
+    </AppContext.Consumer>
   );
-};
+}
 
 export default Footer;

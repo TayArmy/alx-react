@@ -1,40 +1,41 @@
+import { Map } from "immutable";
+
 import {
   FETCH_NOTIFICATIONS_SUCCESS,
   MARK_AS_READ,
-  NotificationTypeFilters,
   SET_TYPE_FILTER,
 } from "../actions/notificationActionTypes";
 
-export const initialState = {
-  filter: NotificationTypeFilters.DEFAULT,
+export const initialNotificationState = {
   notifications: [],
+  filter: "DEFAULT",
 };
-export const notificationReducer = (state = initialState, action) => {
+
+import notificationsNormalizer from "../schema/notifications";
+
+const notificationReducer = (state = Map(initialNotificationState), action) => {
   switch (action.type) {
     case FETCH_NOTIFICATIONS_SUCCESS:
-      return {
-        ...state,
-        notifications: action.data.map((notification) => {
-          notification["isRead"] = false;
-          return notification;
-        }),
-      };
-    // eslint-disable-next-line no-duplicate-case
+      const normalizedData = notificationsNormalizer(action.data);
+
+      Object.keys(normalizedData.notifications).map((key) => {
+        normalizedData.notifications[key].isRead = false;
+      });
+      return state.merge(normalizedData);
+
     case MARK_AS_READ:
-      return {
-        ...state,
-        notifications: state.notifications.map((item) => {
-          if (action.index === item.id) return { ...item, isRead: true };
-          else return item;
-        }),
-      };
+      return state.setIn(
+        ["notifications", String(action.index), "isRead"],
+        true
+      );
+
     case SET_TYPE_FILTER:
-      return {
-        ...state,
-        filter: action.filter,
-      };
+      return state.set("filter", action.filter);
+
     default:
       break;
   }
   return state;
 };
+
+export default notificationReducer;

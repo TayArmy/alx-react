@@ -1,25 +1,38 @@
+import { shallow, mount } from "enzyme";
 import React from "react";
-import { render, screen } from "@testing-library/react";
 import Footer from "./Footer";
+import AppContext from "../App/AppContext";
+import { user, logOut } from "../App/AppContext";
 
-import { StyleSheetTestUtils } from "aphrodite";
+describe("<Footer />", () => {
+  it("Footer renders without crashing", () => {
+    const wrapper = shallow(<Footer />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components at the very least render the text “Copyright”", () => {
+    const wrapper = mount(<Footer />);
+    expect(wrapper.find("div.footer p")).toHaveLength(1);
+    expect(wrapper.find("div.footer p").text()).toContain("Copyright");
+  });
 
-test("Footer renders without crushing", () => {
-  StyleSheetTestUtils.suppressStyleInjection();
-  const { container } = render(<Footer />);
-  expect(container.firstChild).toBeDefined();
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-test('Footer, at the very least, renders the test "Copyright"', () => {
-  StyleSheetTestUtils.suppressStyleInjection();
-  render(<Footer />);
-  expect(screen.getByText(/Copyright/i)).toBeInTheDocument(); //case insensitive match
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
+  it("verify that the link is not displayed when the user is logged out within the context", () => {
+    const wrapper = mount(
+      <AppContext.Provider value={{ user, logOut }}>
+        <Footer />
+      </AppContext.Provider>
+    );
+    expect(wrapper.find("div.footer a")).toHaveLength(0);
+  });
 
-test("Footer by default does not render the contact us link (user not logged in)", () => {
-  StyleSheetTestUtils.suppressStyleInjection();
-  render(<Footer />);
-  expect(screen.queryByText("Contact us")).not.toBeInTheDocument();
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  it("verify that the link is displayed when the user is logged in within the context", () => {
+    const wrapper = mount(
+      <AppContext.Provider
+        value={{ user: { ...user, isLoggedIn: true }, logOut }}
+      >
+        <Footer />
+      </AppContext.Provider>
+    );
+    expect(wrapper.find("div.footer a")).toHaveLength(1);
+    expect(wrapper.find("div.footer a").text()).toEqual("Contact us");
+  });
 });

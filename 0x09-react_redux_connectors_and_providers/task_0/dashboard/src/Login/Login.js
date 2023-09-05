@@ -1,103 +1,103 @@
-import React, { useState } from "react";
-// import './Login.css'
-
+import React, { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import WithLogging from "../HOC/WithLogging";
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+      enableSubmit: false,
+    };
+    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
+    this.handleChangeEmail = this.handleChangeEmail.bind(this);
+    this.handleChangePassword = this.handleChangePassword.bind(this);
+  }
 
-const Login = ({ login }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [enableSubmit, setEnableSubmit] = useState(false);
+  handleLoginSubmit(event) {
+    event.preventDefault();
 
-  const handleLoginSubmit = () => {
-    login(email, password);
-  };
+    const { email, password } = this.state;
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
-    if (email.length > 0 && password.length > 0) setEnableSubmit(true);
-    else setEnableSubmit(false);
-  };
+    this.props.logIn(email, password);
+  }
 
-  const handleChangePassword = (e) => {
-    setPassword(e.target.value);
-    if (email.length > 0 && password.length > 0) setEnableSubmit(true);
-    else setEnableSubmit(false);
-  };
+  handleChangeEmail(event) {
+    const { value } = event.target;
+    const { password } = this.state;
 
-  return (
-    <>
-      <p>Login to access the full dashboard</p>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleLoginSubmit();
-        }}
-        className={css(styles.form)}
-      >
-        <div className={css(styles.labelInputBlock)}>
-          <label htmlFor="email" className={css(styles.labelS)}>
-            email:
-          </label>
+    if (value !== "" && password !== "") this.setState({ enableSubmit: true });
+    else this.setState({ enableSubmit: false });
+
+    this.setState({ email: event.target.value });
+  }
+
+  handleChangePassword(event) {
+    const { value } = event.target;
+    const { email } = this.state;
+
+    if (email !== "" && value !== "") this.setState({ enableSubmit: true });
+    else this.setState({ enableSubmit: false });
+
+    this.setState({ password: event.target.value });
+  }
+
+  render() {
+    return (
+      <div className={css(styles.login)}>
+        <p>Login to access the full dashboard</p>
+        <form action="" onSubmit={this.handleLoginSubmit}>
+          <label htmlFor="email">Email:</label>
           <input
+            type="email"
             id="email"
-            type="text"
-            className={css(styles.inputS)}
-            value={email}
-            onChange={handleChangeEmail}
+            name="email"
+            className={css(styles.loginInput)}
+            value={this.state.email}
+            onChange={this.handleChangeEmail}
           />
-        </div>
-        <div className={css(styles.labelInputBlock)}>
-          <label htmlFor="password" className={css(styles.labelS)}>
-            password:
-          </label>
+          <label htmlFor="password">Password:</label>
           <input
-            id="password"
             type="password"
-            className={css(styles.inputS)}
-            value={password}
-            onChange={handleChangePassword}
+            id="password"
+            name="password"
+            className={css(styles.loginInput)}
+            value={this.state.password}
+            onChange={this.handleChangePassword}
           />
-        </div>
-        <input
-          className={css(styles.buttonS)}
-          type="submit"
-          value="OK"
-          disabled={!enableSubmit}
-        />
-      </form>
-    </>
-  );
+          <input type="submit" disabled={!this.state.enableSubmit} />
+        </form>
+      </div>
+    );
+  }
+}
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
 };
 
-export default WithLogging(Login);
-
-// define Aphrodite styles
 const styles = StyleSheet.create({
-  form: {
-    "@media (min-width: 600px)": {
-      display: "flex",
-      flexDirection: "row",
+  login: {
+    margin: "50px",
+    flexGrow: 1,
+    [screenSize.small]: {
+      marginTop: "10px",
+      marginLeft: 0,
+      marginRight: 0,
+      marginBottom: 0,
     },
   },
-  labelS: {
-    textTransform: "capitalize",
-    paddingRight: "1rem",
-  },
-  inputS: {
-    marginRight: "1rem",
-    border: "none",
-    outline: "none",
-    background: "transparent",
-    backgroundColor: "none",
-  },
-  labelInputBlock: {
-    paddingBlock: ".3rem",
-  },
-  buttonS: {
-    display: "block",
-    background: "none",
-    border: "2px solid Yellow",
+
+  loginInput: {
+    marginLeft: "10px",
+    marginRight: "20px",
+    [screenSize.small]: {
+      display: "block",
+      marginLeft: 0,
+      marginTop: "10px",
+      marginBottom: "10px",
+    },
   },
 });
+
+export default Login;
