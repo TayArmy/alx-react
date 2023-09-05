@@ -20,7 +20,7 @@ export default function getAllNotificationsByUser(userId) {
     if (itemId.author === userId)
       res.push(normalizedData.entities.messages[notifications[itemId].context]);
   }
-  console.log(res);
+  // console.log(res)
   // return res
   return data
     .filter((item) => item.author.id === userId)

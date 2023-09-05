@@ -13,6 +13,7 @@ import {
   LOGIN_FAILURE,
   LOGOUT,
 } from "../actions/uiActionTypes";
+import { Map } from "immutable";
 
 // define initial state of the reducer...
 export const initialState = {
