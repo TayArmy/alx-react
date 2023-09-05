@@ -1,4 +1,4 @@
-import React from "react";
+import { createContext } from "react";
 
 export const user = {
   email: "",
@@ -6,11 +6,10 @@ export const user = {
   isLoggedIn: false,
 };
 
-export function logOut() {
+// logout the user
+export const logOut = () => {
   user.isLoggedIn = false;
-}
+};
 
-export const AppContext = React.createContext({
-  user,
-  logOut,
-});
+// create context and default its value to an object of user and logout fn
+export const AppContext = createContext({ user, logOut });

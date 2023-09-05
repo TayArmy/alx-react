@@ -1,156 +1,164 @@
-import React from "react";
+import { Component } from "react";
+// import './App.css';
+
+import { StyleSheet, css } from "aphrodite";
+
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Login from "../Login/Login";
-import CourseList from "../CourseList/CourseList";
 import Notifications from "../Notifications/Notifications";
+// import { useState } from 'react'
+import CourseList from "../CourseList/CourseList";
+import { getLatestNotification } from "../utils";
+
 import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
-import BodySection from "../BodySection/BodySection";
-import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
-import { getLatestNotification } from "../utils/utils";
+
 import { AppContext, user } from "./AppContext";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-
+class App extends Component {
+  constructor() {
+    super();
     this.state = {
+      // loggedIn: false,
       displayDrawer: false,
       user: user,
-      logOut: this.logOut,
-
-      listNotifications: [
-        { id: 1, type: "default", value: "New course available" },
-        { id: 2, type: "urgent", value: "New resume available" },
-        { id: 3, type: "urgent", html: getLatestNotification() },
-      ],
+      logOut: this.logOut, // this' the defined logOut function - resetting user to default (i.e. no one and logged out)
+      notifications: this.notificationsList,
     };
-
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
-    this.handleHideDrawer = this.handleHideDrawer.bind(this);
-    this.logIn = this.logIn.bind(this);
-    this.logOut = this.logOut.bind(this);
-    this.markNotificationAsRead = this.markNotificationAsRead.bind(this);
   }
 
-  listCourses = [
+  coursesList = [
     { id: 1, name: "ES6", credit: 60 },
     { id: 2, name: "Webpack", credit: 20 },
     { id: 3, name: "React", credit: 40 },
   ];
 
-  handleKeyPress(e) {
-    if (e.ctrlKey && e.key === "h") {
-      e.preventDefault();
-      alert("Logging you out");
-      this.props.logOut();
-    }
-  }
-
-  handleDisplayDrawer() {
-    this.setState({ displayDrawer: true });
-  }
-
-  handleHideDrawer() {
-    this.setState({ displayDrawer: false });
-  }
-
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyPress);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyPress);
-  }
-
-  logIn(email, password) {
+  notificationsList = [
+    { id: 1, value: "New course available", type: "default" },
+    { id: 2, value: "New resume available", type: "urgent" },
+    { id: 3, html: getLatestNotification, type: "urgent" },
+  ];
+  logIn = (email, password) => {
+    // const { loggedIn } = this.state.loggedIn
     this.setState({
+      // loggedIn: !loggedIn
       user: {
         email,
         password,
         isLoggedIn: true,
       },
     });
-  }
+  };
 
-  logOut() {
+  logOut = () => {
+    // reset the value of user object in local state - '' for email and password and isLoggedIn(false)
     this.setState({
       user: user,
     });
+  };
+
+  markNotificationsAsRead = (id) => {
+    console.log(`Notification $${id} has been marked as read`);
+    // remove the notification from notifications (list) -> don't mutate list!
+    this.setState({
+      notifications: this.state.notifications.filter((item) => item.id !== id),
+    });
+  };
+
+  handleDisplayDrawer = () => {
+    // console.log('handleDrawer called')
+    this.setState({
+      displayDrawer: true,
+    });
+    console.log(this.state.displayDrawer);
+  };
+
+  handleHideDrawer = () => {
+    this.setState({
+      displayDrawer: false,
+    });
+  };
+
+  // listen for keydown event when the component has mounted (& check for Ctrl + h simultaneous presses)
+  handleKeyDown = (event) => {
+    if (event.ctrlKey && event.key === "h") {
+      // console.log('event: ', event)
+      alert("Logging you out");
+      // this.props.logOut()
+      this.logOut();
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown);
   }
 
-  markNotificationAsRead(id) {
-    const newList = this.state.listNotifications.filter(
-      (notification) => notification.id !== id
-    );
-    this.setState({ listNotifications: newList });
+  UNSAFE_componentWillMount() {
+    document.removeEventListener("keydown", () => {});
   }
+
   render() {
+    // const { loggedIn } = this.state
     return (
       <AppContext.Provider
-        value={{
-          user: this.state.user,
-          logout: this.state.logOut,
-        }}
+        value={{ user: this.state.user, logOut: this.state.logOut }}
       >
-        <React.Fragment>
-          <div className={css(styles.App)}>
-            <div className="heading-section">
-              <Notifications
-                markNotificationAsRead={this.markNotificationAsRead}
-                listNotifications={this.state.listNotifications}
-                displayDrawer={this.state.displayDrawer}
-                handleDisplayDrawer={this.handleDisplayDrawer}
-                handleHideDrawer={this.handleHideDrawer}
-              />
-              <Header />
-            </div>
+        <Notifications
+          listNotifications={this.state.notifications}
+          displayDrawer={this.state.displayDrawer}
+          handleDisplayDrawer={this.handleDisplayDrawer}
+          handleHideDrawer={this.handleHideDrawer}
+          markAsRead={this.markNotificationsAsRead}
+        />
+        <div className="App">
+          <Header />
+          {/* <div className='App-body'> */}
+          <div className={css(styles.appBody)}>
             {this.state.user.isLoggedIn ? (
               <BodySectionWithMarginBottom title="Course list">
-                <CourseList listCourses={this.listCourses} />
+                <CourseList listCourses={this.coursesList} />
               </BodySectionWithMarginBottom>
             ) : (
               <BodySectionWithMarginBottom title="Log in to continue">
-                <Login logIn={this.logIn} />
+                <Login login={this.logIn} />
               </BodySectionWithMarginBottom>
             )}
-            <BodySection title="News from the school">
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Perspiciatis at tempora odio, necessitatibus repudiandae
-                reiciendis cum nemo sed asperiores ut molestiae eaque aliquam
-                illo ipsa iste vero dolor voluptates.
-              </p>
-            </BodySection>
-            <Footer />
           </div>
-        </React.Fragment>
+          {/* Render BodySection with BodySectionWithMarginBottom by passing its props as `this`'s props (html as props too) */}
+          <BodySectionWithMarginBottom title="News from the School">
+            <p>Test adding a new block - news!</p>
+          </BodySectionWithMarginBottom>
+          <Footer styles={styles} />
+        </div>
       </AppContext.Provider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  App: {
-    height: "100vh",
-    maxWidth: "100vw",
-    position: "relative",
-    fontFamily: "Arial, Helvetica, sans-serif",
-  },
-});
-
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {
-    return;
-  },
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
+// allows you to set default values for the props argument
+// App.defaultProps = {
+//   logOut: () => {},
+//   // displayDrawer: false,
+// }
 
 export default App;
+
+/* aphrodite styles definition */
+const styles = StyleSheet.create({
+  app: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+    margin: "0 2rem",
+  },
+  appBody: {
+    borderBottom: "3px solid rgb(225, 67, 67)",
+    borderTop: "3px solid rgb(225, 67, 67)",
+    height: "80%",
+    paddingBlock: "2rem",
+    paddingLeft: "3rem",
+  },
+  appFooter: {
+    textAlign: "center",
+  },
+});

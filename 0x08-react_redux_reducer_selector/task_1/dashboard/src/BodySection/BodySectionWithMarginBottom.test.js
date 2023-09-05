@@ -1,24 +1,16 @@
-import React from "react";
-import { shallow } from "enzyme";
+import { render, screen } from "@testing-library/react";
 import BodySectionWithMarginBottom from "./BodySectionWithMarginBottom";
-import BodySection from "./BodySection";
 import { StyleSheetTestUtils } from "aphrodite";
 
-describe("BodySectionWithMarginBottom tests", () => {
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-
-  afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
-
-  it("should apply margin bottom to child component", () => {
-    const wrapper = shallow(<BodySectionWithMarginBottom title="test title" />);
-
-    expect(wrapper.find(BodySection)).toHaveLength(1);
-    expect(wrapper.find(BodySection).html()).toEqual(
-      '<div class="bodySection"><h2>test title</h2></div>'
-    );
-  });
+test("Component renders BodySection correctly, passing the props correctly to it", () => {
+  StyleSheetTestUtils.suppressStyleInjection();
+  render(
+    <BodySectionWithMarginBottom title="test title">
+      <p>test children node</p>
+    </BodySectionWithMarginBottom>
+  );
+  expect(screen.getAllByRole("heading").length).toBe(1);
+  expect(screen.getByText("test title")).toBeDefined();
+  expect(screen.getByText("test children node")).toBeDefined();
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
 });

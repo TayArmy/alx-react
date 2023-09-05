@@ -1,31 +1,31 @@
-import React from "react";
-import { shallow } from "enzyme";
+import { render, screen } from "@testing-library/react";
 import WithLogging from "./WithLogging";
+import Header from "../Header/Header";
 
-const TestComponent = () => <p>Test Component</p>;
+import { StyleSheetTestUtils } from "aphrodite";
 
-describe("WithLogging tests", () => {
-  it("should call console.log on mount and dismount", () => {
-    const spy = jest.spyOn(console, "log").mockImplementation();
-    const NewComponent = WithLogging(TestComponent);
-    const wrapper = shallow(<NewComponent />);
+test("console.log is called on mount and on unmount with Component when the wrapped element is pure html", () => {
+  StyleSheetTestUtils.suppressStyleInjection();
+  const WrappedComponent = WithLogging(() => (
+    <h1>Hello World. This' a test.</h1>
+  ));
+  // spy on console.log function
+  const spyLog = jest.spyOn(console, "log");
+  const { unmount } = render(<WrappedComponent />);
+  expect(spyLog).toHaveBeenCalledWith("Component  is mounted");
+  unmount();
+  expect(spyLog).toHaveBeenCalledWith("Component  is going to unmount");
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-    expect(spy).toBeCalledTimes(1);
-    wrapper.unmount();
-    expect(spy).toBeCalledTimes(2);
-    spy.mockRestore();
-  });
-
-  it("should log out the right message on mount and on unmount", () => {
-    const spy = jest.spyOn(console, "log").mockImplementation();
-    const NewComponent = WithLogging(TestComponent);
-    const wrapper = shallow(<NewComponent />);
-
-    expect(spy).toBeCalledTimes(1);
-    expect(spy).toBeCalledWith("Component TestComponent is mounted");
-    wrapper.unmount();
-    expect(spy).toHaveBeenCalledTimes(2);
-    expect(spy).toBeCalledWith("Component TestComponent is going to unmount");
-    spy.mockRestore();
-  });
+test("console.log is called on mount and on unmount with Component when the wrapped element is Header", () => {
+  StyleSheetTestUtils.suppressStyleInjection();
+  const WrappedComponent = WithLogging(Header);
+  // spy on console.log function
+  const spyLog = jest.spyOn(console, "log");
+  const { unmount } = render(<WrappedComponent />);
+  expect(spyLog).toHaveBeenCalledWith("Component Header is mounted");
+  unmount();
+  expect(spyLog).toHaveBeenCalledWith("Component Header is going to unmount");
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
 });

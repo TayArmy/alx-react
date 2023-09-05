@@ -1,19 +1,25 @@
-import React from "react";
+import { render, screen } from "@testing-library/react";
 import BodySection from "./BodySection";
-import { shallow } from "enzyme";
+import { StyleSheetTestUtils } from "aphrodite";
 
-describe("BodySection tests", () => {
-  it("should render correctly", () => {
-    const wrapper = shallow(
-      <BodySection title="test title">
-        <p>test children node</p>
-      </BodySection>
-    );
+test("BodySection correctly renders one h2 element", () => {
+  StyleSheetTestUtils.suppressStyleInjection();
+  render(
+    <BodySection title="test title">
+      <p>test children node</p>
+    </BodySection>
+  );
+  expect(screen.getAllByRole("heading").length).toBe(1);
+  expect(screen.getByText("test title")).toBeInTheDocument();
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-    expect(wrapper.exists()).toBe(true);
-    expect(wrapper.exists("h2")).toBe(true);
-    expect(wrapper.find("h2").html()).toEqual("<h2>test title</h2>");
-    expect(wrapper.exists("p")).toBe(true);
-    expect(wrapper.find("p").text()).toEqual("test children node");
-  });
+test("BodySection correctly renders the children", () => {
+  render(
+    <BodySection title="test title">
+      <p>test children node</p>
+    </BodySection>
+  );
+  expect(screen.getByText("test children node")).toBeInTheDocument();
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
 });

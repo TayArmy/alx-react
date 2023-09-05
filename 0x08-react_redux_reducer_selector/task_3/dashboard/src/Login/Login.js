@@ -1,86 +1,103 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+// import './Login.css'
 
-function Login(props) {
+import { StyleSheet, css } from "aphrodite";
+
+import WithLogging from "../HOC/WithLogging";
+
+const Login = ({ login }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [enableSubmit, setEnableSubmit] = useState(false);
 
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    props.logIn(
-      e.target.elements.email.value,
-      e.target.elements.password.value
-    );
+  const handleLoginSubmit = () => {
+    login(email, password);
   };
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
+    if (email.length > 0 && password.length > 0) setEnableSubmit(true);
+    else setEnableSubmit(false);
   };
 
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
+    if (email.length > 0 && password.length > 0) setEnableSubmit(true);
+    else setEnableSubmit(false);
   };
 
-  useEffect(() => {
-    if (email !== "" && password !== "") {
-      setEnableSubmit(true);
-    } else {
-      if (enableSubmit !== false) {
-        setEnableSubmit(false);
-      }
-    }
-  }, [email, password]);
-
   return (
-    <React.Fragment>
-      <div className={css(styles["App-body"])}>
-        <p>Login to access the full dashboard</p>
-        <form onSubmit={handleLoginSubmit}>
-          <label htmlFor="email">Email:</label>
+    <>
+      <p>Login to access the full dashboard</p>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLoginSubmit();
+        }}
+        className={css(styles.form)}
+      >
+        <div className={css(styles.labelInputBlock)}>
+          <label htmlFor="email" className={css(styles.labelS)}>
+            email:
+          </label>
           <input
-            className={css(styles.input)}
-            type="email"
             id="email"
-            name="email"
+            type="text"
+            className={css(styles.inputS)}
             value={email}
             onChange={handleChangeEmail}
           />
-          <label htmlFor="password">Password:</label>
+        </div>
+        <div className={css(styles.labelInputBlock)}>
+          <label htmlFor="password" className={css(styles.labelS)}>
+            password:
+          </label>
           <input
-            className={css(styles.input)}
-            type="password"
             id="password"
-            name="password"
+            type="password"
+            className={css(styles.inputS)}
             value={password}
             onChange={handleChangePassword}
           />
-          <input type="submit" value="Ok" disabled={!enableSubmit} />
-        </form>
-      </div>
-    </React.Fragment>
+        </div>
+        <input
+          className={css(styles.buttonS)}
+          type="submit"
+          value="OK"
+          disabled={!enableSubmit}
+        />
+      </form>
+    </>
   );
-}
-
-Login.propTypes = {
-  logIn: PropTypes.func,
 };
 
+export default WithLogging(Login);
+
+// define Aphrodite styles
 const styles = StyleSheet.create({
-  "App-body": {
-    fontSize: "1rem",
-    padding: "2em",
-    height: "45%",
-    "@media (max-width: 900px)": {
+  form: {
+    "@media (min-width: 600px)": {
       display: "flex",
-      flexDirection: "column",
+      flexDirection: "row",
     },
   },
-
-  input: {
-    margin: "10px",
+  labelS: {
+    textTransform: "capitalize",
+    paddingRight: "1rem",
+  },
+  inputS: {
+    marginRight: "1rem",
+    border: "none",
+    outline: "none",
+    background: "transparent",
+    backgroundColor: "none",
+  },
+  labelInputBlock: {
+    paddingBlock: ".3rem",
+  },
+  buttonS: {
+    display: "block",
+    background: "none",
+    border: "2px solid Yellow",
   },
 });
-
-export default Login;
